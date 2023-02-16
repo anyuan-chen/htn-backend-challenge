@@ -6,6 +6,7 @@ import {
   skillsResolver,
   userCreateInputResolver,
   userResolver,
+  updateUserResolver,
 } from "./resolvers.js";
 
 // A schema is a collection of type definitions (hence "typeDefs")
@@ -34,10 +35,10 @@ const typeDefs = `#graphql
     allUsers: [User]
     skillFrequency: [Skill!]!
     skills: [Skill!]
-    updateUser(uid : Int!): User
   }
   type Mutation {
     addUser(data: UserCreateInput): User
+    updateUser(uid : Int!, data: UserUpdateInput): User
   }
   input UserCreateInput {
     name: String
@@ -49,6 +50,13 @@ const typeDefs = `#graphql
   input SkillCreateInput {
     skill: String
     rating: Int
+  }
+  input UserUpdateInput {
+    name: String
+    phone: String
+    company: String
+    email: String
+    skills: [SkillCreateInput]
   }
 `;
 
@@ -68,6 +76,8 @@ const resolvers = {
   Mutation: {
     addUser: (parent, args, contextValue) =>
       userCreateInputResolver(parent, args, contextValue),
+    updateUser: (parent, args, contextValue) =>
+      updateUserResolver(parent, args, contextValue),
   },
 };
 

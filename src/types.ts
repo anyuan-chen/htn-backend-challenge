@@ -9,4 +9,13 @@ interface SkillCreateInput {
   skill: string;
   rating: number;
 }
-export { UserCreateInput, SkillCreateInput };
+
+interface UserUpdateInput {
+  name?: string;
+  phone?: string;
+  company?: string;
+  email?: string;
+  skills?: [SkillCreateInput];
+}
+
+export { UserCreateInput, SkillCreateInput, UserUpdateInput };

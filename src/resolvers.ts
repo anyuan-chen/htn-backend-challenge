@@ -34,7 +34,6 @@ const userCreateInputResolver = async (
   args: { data: UserCreateInput },
   contextValue
 ) => {
-  //console.log(args);
   const skills = args.data.skills.map((skill) => {
     return {
       skill: skill.skill,
@@ -65,58 +64,42 @@ const updateUserResolver = async (
     //can't do upsert many here which would be more efficient
 
     //Two options:
-    //Option 1 (implemented)
+    //Option 1 (not implemented)
     //read all the skills which already exist for the users
     //filter to two lists:
     //update all skills that already exist
     //create new skills that doen't exist
+    //delete all skills that are inside the db but not in one of the two lists
 
-    const all_skills = await context.prisma.skill.findMany({
+    //Option 2 (implemented)
+    //just delete all the skills and add the ones on the list back
+    await context.prisma.skill.deleteMany({
       where: {
         user_uid: args.uid,
       },
     });
-    let update_list: Skill[] = [];
-    let create_list: Skill[] = [];
-    for (const skill of all_skills) {
-      if (
-        all_skills.find(
-          (unknown_skill) => skill.skill == unknown_skill.skill
-        ) != undefined
-      ) {
-        update_list.push(skill);
-      } else {
-        create_list.push(skill);
-      }
-    }
-    update_list.forEach((skill) => {
-      context.prisma.skill.update({
-        where: {
-          uid: skill.uid,
-        },
+    //sqlite doesn't support createMany
+    for (const skill of args.data.skills) {
+      await context.prisma.skill.create({
         data: {
           skill: skill.skill,
           rating: skill.rating,
+          user_uid: args.uid,
         },
       });
-    });
-    create_list.forEach((skill) => {
-      context.prisma.skill.create({
-        data: skill,
-      });
-    });
+    }
   }
   return context.prisma.user.update({
-    where : {
-        uid: args.uid
-    }, 
+    where: {
+      uid: args.uid,
+    },
     data: {
-        name: args.data.name,
-        company: args.data.company,
-        phone: args.data.phone,
-        email: args.data.email,
-    }
-  })
+      name: args.data.name,
+      company: args.data.company,
+      phone: args.data.phone,
+      email: args.data.email,
+    },
+  });
 };
 
 export {
