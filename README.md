@@ -18,6 +18,8 @@ interactivity.
 3. Run npm install
 4. Run the server with ```npm start``` to get up and running!
 
-## Sample Queries: 
+## Explore: 
+
+https://studio.apollographql.com/graph/htn-graph/home?variant=current
 
 
