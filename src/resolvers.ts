@@ -1,4 +1,3 @@
-import { Skill } from "@prisma/client";
 import { context } from "./context.js";
 import {
   SkillFrequencyFilter,
