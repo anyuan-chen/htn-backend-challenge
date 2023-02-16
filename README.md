@@ -1,6 +1,6 @@
 # Hack the North
 
-Hello Hack the North Team! This submission is written with Apollo GraphQL server with it's default HTTP server. I used SQLite with Prisma for database
+Hello Hack the North Team! This submission is written with Apollo GraphQL server. I used SQLite with Prisma for database
 interactivity. 
 
 ## Navigating this Codebase:
