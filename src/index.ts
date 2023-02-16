@@ -33,12 +33,23 @@ const typeDefs = `#graphql
   type Query {
     user(uid : Int!): User
     allUsers: [User]
-    skillFrequency: [Skill!]!
+    skillFrequency(filter: SkillFrequencyFilter): [SkillFrequency!]!
     skills: [Skill!]
   }
   type Mutation {
     addUser(data: UserCreateInput): User
     updateUser(uid : Int!, data: UserUpdateInput): User
+  }
+  type SkillFrequency {
+    skill: String
+    _count: SkillAggregateArgs
+  }
+  type SkillAggregateArgs {
+    _all: Int
+  }
+  input SkillFrequencyFilter{
+    min: Int
+    max: Int
   }
   input UserCreateInput {
     name: String

@@ -18,4 +18,21 @@ interface UserUpdateInput {
   skills?: [SkillCreateInput];
 }
 
-export { UserCreateInput, SkillCreateInput, UserUpdateInput };
+interface SkillFrequencyFilter {
+  min?: number;
+  max?: number;
+}
+interface SkillFrequency {
+  skill: string;
+  _count?: {
+    _all?: number;
+  };
+}
+
+export {
+  UserCreateInput,
+  SkillCreateInput,
+  UserUpdateInput,
+  SkillFrequencyFilter,
+  SkillFrequency,
+};

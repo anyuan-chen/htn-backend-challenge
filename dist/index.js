@@ -1,6 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { skillFrequencyResolver, skillsResolver, userCreateInputResolver, userResolver, } from "./resolvers.js";
+import { allUserResolver, skillFrequencyResolver, skillsResolver, userCreateInputResolver, userResolver, updateUserResolver, } from "./resolvers.js";
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
@@ -24,12 +24,24 @@ const typeDefs = `#graphql
   # clients can execute, along with the return type for each.
   type Query {
     user(uid : Int!): User
-    skillFrequency: [Skill!]!
+    allUsers: [User]
+    skillFrequency(filter: SkillFrequencyFilter): [SkillFrequency!]!
     skills: [Skill!]
-    updateUser(uid : Int!): User
   }
   type Mutation {
     addUser(data: UserCreateInput): User
+    updateUser(uid : Int!, data: UserUpdateInput): User
+  }
+  type SkillFrequency {
+    skill: String
+    _count: SkillAggregateArgs
+  }
+  type SkillAggregateArgs {
+    _all: Int
+  }
+  input SkillFrequencyFilter{
+    min: Int
+    max: Int
   }
   input UserCreateInput {
     name: String
@@ -42,6 +54,13 @@ const typeDefs = `#graphql
     skill: String
     rating: Int
   }
+  input UserUpdateInput {
+    name: String
+    phone: String
+    company: String
+    email: String
+    skills: [SkillCreateInput]
+  }
 `;
 // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves books from the "books" array above.
@@ -50,9 +69,11 @@ const resolvers = {
         user: (parent, args, contextValue) => userResolver(parent, args, contextValue),
         skillFrequency: (parent, args, contextValue) => skillFrequencyResolver(parent, args, contextValue),
         skills: (parent, args, contextValue) => skillsResolver(parent, args, contextValue),
+        allUsers: (parent, args, contextValue) => allUserResolver(parent, args, contextValue),
     },
     Mutation: {
         addUser: (parent, args, contextValue) => userCreateInputResolver(parent, args, contextValue),
+        updateUser: (parent, args, contextValue) => updateUserResolver(parent, args, contextValue),
     },
 };
 // The ApolloServer constructor requires two parameters: your schema
