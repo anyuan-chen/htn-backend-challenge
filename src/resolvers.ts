@@ -1,6 +1,10 @@
 import { Skill } from "@prisma/client";
 import { context } from "./context.js";
-import { UserCreateInput, UserUpdateInput } from "./types.js";
+import {
+  SkillFrequencyFilter,
+  UserCreateInput,
+  UserUpdateInput,
+} from "./types.js";
 
 const allUserResolver = (parent, args, contextValue) => {
   return context.prisma.user.findMany();
@@ -19,16 +23,33 @@ const userResolver = (parent, args, contextValue) => {
   });
 };
 
-const skillFrequencyResolver = (parent, args, contextValue) => {
-  return context.prisma.skill.count;
-};
-
 const skillsResolver = (parent, args, contextValue) => {
   return context.prisma.skill.findMany();
 };
-
-const addSkillsResolver = (parent, args, contextValue) => {};
-
+const skillFrequencyResolver = async (
+  parent,
+  args: { filter: SkillFrequencyFilter },
+  contextValue
+) => {
+  let tmp = await context.prisma.skill.groupBy({
+    by: ["skill"],
+    _count: {
+      _all: true,
+    },
+  });
+  //prisma can't filter on the _all field "can only filter on field available in by filed"
+  //js filter instead implemented/but could also use raw sql here to run the query if it needs to be as performant as possible
+  if (args.filter) {
+    console.log("hi");
+    tmp = tmp.filter((skill) => {
+      return (
+        skill._count._all >= args.filter.min &&
+        skill._count._all <= args.filter.max
+      );
+    });
+  }
+  return tmp;
+};
 const userCreateInputResolver = async (
   parent,
   args: { data: UserCreateInput },
