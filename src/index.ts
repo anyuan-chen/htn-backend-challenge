@@ -1,6 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import {
+  allUserResolver,
   skillFrequencyResolver,
   skillsResolver,
   userCreateInputResolver,
@@ -30,6 +31,7 @@ const typeDefs = `#graphql
   # clients can execute, along with the return type for each.
   type Query {
     user(uid : Int!): User
+    allUsers: [User]
     skillFrequency: [Skill!]!
     skills: [Skill!]
     updateUser(uid : Int!): User
@@ -60,6 +62,8 @@ const resolvers = {
       skillFrequencyResolver(parent, args, contextValue),
     skills: (parent, args, contextValue) =>
       skillsResolver(parent, args, contextValue),
+    allUsers: (parent, args, contextValue) =>
+      allUserResolver(parent, args, contextValue),
   },
   Mutation: {
     addUser: (parent, args, contextValue) =>
