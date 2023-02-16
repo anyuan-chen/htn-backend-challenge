@@ -15,7 +15,9 @@ model User {
     name   String
     skills Skill[] 
 }
-
+//would have liked to set the primary key here as a combination of user_uid and skill name
+//Prisma does not support combination keys, and neither are appropriate on their own so I had to 
+//create a new uid
 model Skill {
     uid             Int @id @default(autoincrement())
     skill           String 
