@@ -20,6 +20,4 @@ interactivity.
 
 ## Explore: 
 
-https://studio.apollographql.com/graph/htn-graph/home?variant=current
-
-
+https://studio.apollographql.com/public/htn-graph/home?variant=current
