@@ -38,6 +38,9 @@ const skillFrequencyResolver = async (
   });
   //prisma can't filter on the _all field "can only filter on field available in by filed"
   //js filter instead implemented/but could also use raw sql here to run the query if it needs to be as performant as possible
+  
+  //also since this isn't changed very often, could employ the strategy of a redis cache here that is refreshed every 
+  //10 minutes - skills are not something that need to be displayed right away 
   if (args.filter) {
     console.log("hi");
     tmp = tmp.filter((skill) => {
